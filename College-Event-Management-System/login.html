@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login System - EventEase</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial;
+}
+
+/* NAVBAR */
+.navbar {
+  width: 100%;
+  height: 60px;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin: 0 20px;
+  font-size: 16px;
+}
+
+.navbar a:hover {
+  color: #667eea;
+}
+
+/* BACKGROUND */
+body {
+  height: 100vh;
+  margin: 0;
+
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+              url("images/bg.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 60px;
+}
+
+/* LOGIN BOX (GLASS EFFECT) */
+.login-box {
+  width: 350px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  text-align: center;
+  color: white;
+}
+
+.login-box h2 {
+  margin-bottom: 15px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #667eea;
+  color: white;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: #5a67d8;
+}
+
+.note {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #fff;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <a href="login.html">Login</a>
+  <a href="user.html">User</a>
+  <a href="admin.html">Admin</a>
+  <a href="feedback.html">Feedback</a>
+</div>
+
+<!-- LOGIN BOX -->
+<div class="login-box">
+  <h2>🔒 Login System</h2>
+
+  <input type="text" placeholder="Username" id="username">
+  <input type="password" placeholder="Password" id="password">
+
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+
+  <div class="note">Use Register first, then Login</div>
+</div>
+
+<script>
+function register() {
+  let user = document.getElementById("username").value;
+  let pass = document.getElementById("password").value;
+
+  if(user === "" || pass === "") {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  localStorage.setItem("user", user);
+  localStorage.setItem("pass", pass);
+
+  alert("Registered Successfully!");
+}
+
+function login() {
+  let user = document.getElementById("username").value;
+  let pass = document.getElementById("password").value;
+
+  if (user === "" || pass === "") {
+    alert("Fill all fields");
+    return;
+  }
+
+  // ✅ IMPORTANT LINE
+  localStorage.setItem("currentUser", user);
+
+  window.location.href = "user.html";
+}
+</script>
+
+</body>
+</html>

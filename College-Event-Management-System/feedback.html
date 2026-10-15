@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Feedback - EventEase</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .navbar a {
+      color: white;
+      padding: 14px 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      background: rgba(255,255,255,0.2);
+      border-radius: 5px;
+    }
+
+    h2 {
+      text-align: center;
+      color: white;
+      margin-top: 20px;
+    }
+
+    .box {
+      background: white;
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #667eea;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .feedback {
+      background: white;
+      max-width: 600px;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .title {
+      text-align: center;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <a href="login.html">Login</a>
+  <a href="user.html">User</a>
+  <a href="admin.html">Admin</a>
+  <a href="feedback.html">Feedback</a>
+</div>
+
+<h2>📝 Feedback Page</h2>
+
+<!-- FEEDBACK FORM -->
+<div class="box">
+  <input type="text" id="name" placeholder="Your Name">
+
+  <select id="rating">
+    <option value="">Rate Us ⭐</option>
+    <option value="1">1 ⭐</option>
+    <option value="2">2 ⭐</option>
+    <option value="3">3 ⭐</option>
+    <option value="4">4 ⭐</option>
+    <option value="5">5 ⭐</option>
+  </select>
+
+  <textarea id="message" placeholder="Write your feedback..."></textarea>
+
+  <button onclick="submitFeedback()">Submit Feedback</button>
+</div>
+
+<h2 class="title">All Feedback</h2>
+<div id="list"></div>
+
+<script>
+
+// SUBMIT FEEDBACK
+function submitFeedback() {
+  let name = document.getElementById("name").value;
+  let rating = document.getElementById("rating").value;
+  let message = document.getElementById("message").value;
+
+  if (!name || !rating || !message) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  let feedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
+
+  feedbacks.push({
+    name: name,
+    rating: rating,
+    message: message
+  });
+
+  localStorage.setItem("feedbacks", JSON.stringify(feedbacks));
+
+  document.getElementById("name").value = "";
+  document.getElementById("rating").value = "";
+  document.getElementById("message").value = "";
+
+  displayFeedback();
+}
+
+// DISPLAY FEEDBACK
+function displayFeedback() {
+  let list = document.getElementById("list");
+  list.innerHTML = "";
+
+  let feedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
+
+  if (feedbacks.length === 0) {
+    list.innerHTML = "<p style='color:white;text-align:center;'>No feedback yet</p>";
+    return;
+  }
+
+  feedbacks.forEach(f => {
+    list.innerHTML += `
+      <div class="feedback">
+        <b>${f.name}</b><br>
+        Rating: ${f.rating} ⭐<br>
+        Message: ${f.message}
+      </div>
+    `;
+  });
+}
+
+// INIT
+displayFeedback();
+
+</script>
+
+</body>
+</html>

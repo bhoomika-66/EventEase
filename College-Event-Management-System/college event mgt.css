@@ -1,0 +1,52 @@
+/* FULL SCREEN BACKGROUND */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+
+body {
+  min-height: 100vh;
+
+  background: linear-gradient(rgba(102,126,234,0.5), rgba(118,75,162,0.5)),
+              url("images/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+/* 🔥 CENTER EVERYTHING (ONLY IF YOU WANT CENTER PAGE) */
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;   /* horizontal */
+  align-items: center;       /* vertical */
+}
+
+
+/* CARD DESIGN */
+.card {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 12px;
+  color: white;
+}
+
+
+/* TITLE */
+.card h1 {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+
+/* BUTTON */
+button {
+  padding: 10px 20px;
+  background: #00c3ff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

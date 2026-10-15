@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Dashboard - EventEase</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      
+      color: white;
+      animation: fade 0.8s ease-in-out;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .navbar a {
+      color: white;
+      padding: 14px 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      background: rgba(255,255,255,0.2);
+      border-radius: 5px;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    /* EVENT CARD */
+    .event {
+      background: white;
+      color: black;
+      margin: 15px auto;
+      padding: 15px;
+      max-width: 600px;
+      border-radius: 12px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    input {
+      width: 90%;
+      padding: 8px;
+      margin: 5px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .btn {
+      background: #667eea;
+      color: white;
+    }
+
+    .logout {
+      background: red;
+      color: white;
+      display: block;
+      margin: 10px auto;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <a href="login.html">Login</a>
+  <a href="user.html">User</a>
+  <a href="admin.html">Admin</a>
+  <a href="feedback.html">Feedback</a>
+</div>
+
+<h2>🎉 User Dashboard</h2>
+
+<button class="logout" onclick="logout()">Logout 🔐</button>
+
+<div id="list"></div>
+
+<script>
+
+// 🔐 CHECK LOGIN
+let currentUser = localStorage.getItem("currentUser");
+
+if (!currentUser) {
+  alert("Please login first!");
+  window.location.href = "login.html";
+}
+
+// 🔐 LOGOUT
+function logout() {
+  localStorage.removeItem("currentUser");
+  alert("Logged out!");
+  window.location.href = "login.html";
+}
+
+// 📅 DISPLAY EVENTS
+function display() {
+  let events = JSON.parse(localStorage.getItem("events")) || [];
+  let list = document.getElementById("list");
+  list.innerHTML = "";
+
+  if (events.length === 0) {
+    list.innerHTML = "<p style='text-align:center;'>No events available</p>";
+    return;
+  }
+
+  events.forEach((e, i) => {
+
+    if (!e.participants) e.participants = [];
+
+    list.innerHTML += `
+      <div class="event">
+        <b>${e.name}</b><br>
+        📅 ${e.date}<br>
+        ⏰ ${e.time}<br>
+        📍 ${e.venue}<br><br>
+
+        <button class="btn" onclick="showForm(${i})">Participate</button>
+
+        <div id="form${i}" style="display:none;">
+          <input id="name${i}" placeholder="Name"><br>
+          <input id="class${i}" placeholder="Class"><br>
+          <input id="roll${i}" placeholder="Roll No"><br>
+          <input id="phone${i}" placeholder="Phone No"><br>
+
+          <button class="btn" onclick="join(${i})">Submit</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// 👇 SHOW FORM
+function showForm(i) {
+  document.getElementById("form" + i).style.display = "block";
+}
+
+// 👇 JOIN EVENT
+function join(i) {
+  let name = document.getElementById("name" + i).value;
+  let cls = document.getElementById("class" + i).value;
+  let roll = document.getElementById("roll" + i).value;
+  let phone = document.getElementById("phone" + i).value;
+
+  if (!name || !cls || !roll || !phone) {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  let events = JSON.parse(localStorage.getItem("events")) || [];
+
+  if (!events[i].participants) {
+    events[i].participants = [];
+  }
+
+  // prevent duplicate roll no
+  let exists = events[i].participants.some(p => p.roll === roll);
+
+  if (exists) {
+    alert("Already registered!");
+    return;
+  }
+
+  events[i].participants.push({
+    name: name,
+    class: cls,
+    roll: roll,
+    phone: phone
+  });
+
+  localStorage.setItem("currentUser", user);
+window.location.href = "user.html";
+}
+
+// INIT
+display();
+
+</script>
+
+</body>
+</html>

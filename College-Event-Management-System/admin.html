@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  color: white;
+
+  background-image: url("images/bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.8);
+  padding: 15px 25px;
+}
+
+.navbar a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  color: #00c3ff;
+}
+
+.logout-btn {
+  background: red;
+  padding: 6px 12px;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* LOGIN */
+.center-box {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  background: rgba(0,0,0,0.7);
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  width: 100%;
+  background: #00c3ff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  color: white;
+}
+
+/* DASHBOARD */
+.container {
+  padding: 20px;
+  background: rgba(0,0,0,0.6);
+  min-height: 100vh;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: rgba(0,0,0,0.6);
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid white;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginSection" class="center-box">
+  <div class="login-box">
+    <h2>Admin Login</h2>
+
+    <input type="text" id="adminId" placeholder="Admin ID">
+    <input type="password" id="adminPass" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <h2>EventEase Admin</h2>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="user.html">Events</a>
+      <a href="feedback.html">Feedback</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <h2>Event Management</h2>
+
+    <input type="text" id="name" placeholder="Event Name">
+    <input type="text" id="venue" placeholder="Venue">
+    <input type="time" id="time">
+    <input type="date" id="date">
+
+    <button onclick="addEvent()">Add Event</button>
+
+    <table id="eventTable">
+      <tr>
+        <th>Name</th>
+        <th>Venue</th>
+        <th>Time</th>
+        <th>Date</th>
+        <th>Participants</th>
+        <th>Actions</th>
+      </tr>
+    </table>
+
+  </div>
+</div>
+
+<script>
+
+/* LOGIN */
+function login() {
+  let id = document.getElementById("adminId").value;
+  let pass = document.getElementById("adminPass").value;
+
+  if (id === "admin" && pass === "1234") {
+    document.getElementById("loginSection").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    displayEvents();
+  } else {
+    alert("Wrong ID or Password");
+  }
+}
+
+/* LOGOUT */
+function logout() {
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("loginSection").classList.remove("hidden");
+}
+
+/* GET EVENTS */
+function getEvents() {
+  return JSON.parse(localStorage.getItem("events")) || [];
+}
+
+/* SAVE EVENTS */
+function saveEvents(events) {
+  localStorage.setItem("events", JSON.stringify(events));
+}
+
+/* ADD EVENT */
+function addEvent() {
+  let name = document.getElementById("name").value;
+  let venue = document.getElementById("venue").value;
+  let time = document.getElementById("time").value;
+  let date = document.getElementById("date").value;
+
+  if (!name || !venue || !time || !date) {
+    alert("Fill all fields!");
+    return;
+  }
+
+  let events = getEvents();
+
+  events.push({
+    name,
+    venue,
+    time,
+    date,
+    participants: []
+  });
+
+  saveEvents(events);
+  displayEvents();
+}
+
+/* DISPLAY */
+function displayEvents() {
+  let events = getEvents();
+  let table = document.getElementById("eventTable");
+
+  table.innerHTML = `
+    <tr>
+      <th>Name</th>
+      <th>Venue</th>
+      <th>Time</th>
+      <th>Date</th>
+      <th>Participants</th>
+      <th>Actions</th>
+    </tr>
+  `;
+
+  events.forEach((event, index) => {
+    let row = table.insertRow();
+
+    row.insertCell(0).innerText = event.name;
+    row.insertCell(1).innerText = event.venue;
+    row.insertCell(2).innerText = event.time;
+    row.insertCell(3).innerText = event.date;
+    row.insertCell(4).innerText = event.participants.length;
+
+    row.insertCell(5).innerHTML = `
+      <button onclick="editEvent(${index})">Edit</button>
+      <button onclick="deleteEvent(${index})">Delete</button>
+    `;
+  });
+}
+
+/* DELETE */
+function deleteEvent(index) {
+  let events = getEvents();
+  events.splice(index, 1);
+  saveEvents(events);
+  displayEvents();
+}
+
+/* EDIT */
+function editEvent(index) {
+  let events = getEvents();
+  let event = events[index];
+
+  document.getElementById("name").value = event.name;
+  document.getElementById("venue").value = event.venue;
+  document.getElementById("time").value = event.time;
+  document.getElementById("date").value = event.date;
+
+  events.splice(index, 1);
+  saveEvents(events);
+  displayEvents();
+}
+
+</script>
+
+</body>
+</html>
